@@ -25,6 +25,8 @@ public class PokemonService {
             System.out.println("0 - Sair");
             System.out.println("1 - Salvar");
             System.out.println("2 - Atualizar");
+            System.out.println("3 - visualizar");
+            System.out.println("4 - deletar");
 
             int acao = inserido.nextInt();
 
@@ -32,7 +34,12 @@ public class PokemonService {
                 salvar(inserido);
             }if(acao == 2){
                 atualizar(inserido);
-            }else{
+            }if(acao == 3){
+                visualizar();
+            }if(acao == 4){
+                deletar(inserido);
+            }
+            else{
                 abaAberta = false;
             }
 
@@ -47,6 +54,8 @@ public class PokemonService {
         String nome = inserido.next();
         Pokemon pokemon = new Pokemon();
         pokemon.setName(nome);
+        String Tipo = inserido.next();
+
         pokemonRepository.save(pokemon);
         System.out.println("Salvo");
 
@@ -62,6 +71,18 @@ public class PokemonService {
         pokemon.setName(novoNome);
         pokemonRepository.save(pokemon);
         System.out.println("Atualizado");
+    }
+
+    public void visualizar(){
+        Iterable<Pokemon> pokemons = pokemonRepository.findAll();
+        pokemons.forEach(pokemon -> System.out.println());
+    }
+
+    public void deletar(Scanner inserido){
+        System.out.println("Digite o ID");
+        int id = inserido.nextInt();
+        pokemonRepository.deleteById(id);
+        System.out.println("deletado");
     }
 
 }

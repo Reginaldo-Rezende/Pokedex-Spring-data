@@ -11,6 +11,18 @@ public class Pokemon {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String name;
+    @ManyToOne
+    @JoinColumn(name = "tipoDoPokemon_id", nullable = false)
+    private TipoDoPokemon tipo;
+
+
+    public TipoDoPokemon getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoDoPokemon tipo) {
+        this.tipo = tipo;
+    }
 
     public Integer getId() {
         return id;
