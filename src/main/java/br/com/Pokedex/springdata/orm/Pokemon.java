@@ -12,16 +12,16 @@ public class Pokemon {
     private Integer id;
     private String name;
     @ManyToOne
-    @JoinColumn(name = "tipoDoPokemon_id", nullable = false)
+    @JoinColumn(name = "tipoDoPokemon_tipo")
     private TipoDoPokemon tipo;
 
+    @Override
+    public String toString() {
+        return
+                "["+ id +" "+
+                  name + " " +
+                 tipo.getTipo()+"]";
 
-    public TipoDoPokemon getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(TipoDoPokemon tipo) {
-        this.tipo = tipo;
     }
 
     public Integer getId() {
@@ -38,5 +38,13 @@ public class Pokemon {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public TipoDoPokemon getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoDoPokemon tipo) {
+        this.tipo = tipo;
     }
 }

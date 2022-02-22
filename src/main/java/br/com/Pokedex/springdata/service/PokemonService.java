@@ -2,45 +2,62 @@ package br.com.Pokedex.springdata.service;
 
 
 import br.com.Pokedex.springdata.orm.Pokemon;
+import br.com.Pokedex.springdata.orm.TipoDoPokemon;
 import br.com.Pokedex.springdata.repository.PokemonRepository;
+import br.com.Pokedex.springdata.repository.TipoDoPokemonRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Scanner;
 
 @Service
 public class PokemonService {
 
     private final PokemonRepository pokemonRepository;
+    private final TipoDoPokemonRepository tipoDoPokemonRepository;
+
 
     private Boolean abaAberta = true;
 
-    public PokemonService(PokemonRepository pokemonRepository) {
+    public PokemonService(PokemonRepository pokemonRepository, TipoDoPokemonRepository tipoDoPokemonRepository, TipoDoPokemonRepository tipoDoPokemonRepository1) {
         this.pokemonRepository = pokemonRepository;
+
+        this.tipoDoPokemonRepository = tipoDoPokemonRepository1;
     }
 
     public void inicial(Scanner inserido){
 
         while(abaAberta){
-
-            System.out.println("0 - Sair");
+            System.out.println("---Pokédex---");
+            System.out.println("0 - Voltar");
             System.out.println("1 - Salvar");
             System.out.println("2 - Atualizar");
             System.out.println("3 - visualizar");
             System.out.println("4 - deletar");
+            System.out.println("-------------");
 
             int acao = inserido.nextInt();
 
-            if (acao ==1){
-                salvar(inserido);
-            }if(acao == 2){
-                atualizar(inserido);
-            }if(acao == 3){
-                visualizar();
-            }if(acao == 4){
-                deletar(inserido);
-            }
-            else{
-                abaAberta = false;
+
+            switch (acao) {
+                case 1:
+                    salvar(inserido);
+                    break;
+                case 2:
+                    atualizar(inserido);
+                    break;
+                case 3:
+                    visualizar();
+                    break;
+                case 4:
+                    deletar(inserido);
+                    break;
+                case 0:
+                    abaAberta = false;
+                    break;
+                default:
+                    abaAberta = true;
+                    break;
             }
 
 
@@ -54,10 +71,28 @@ public class PokemonService {
         String nome = inserido.next();
         Pokemon pokemon = new Pokemon();
         pokemon.setName(nome);
-        String Tipo = inserido.next();
 
-        pokemonRepository.save(pokemon);
-        System.out.println("Salvo");
+        System.out.println("Tipos Possiveis: ->"+ tipoDoPokemonRepository.findAll());
+        System.out.println("Caso não tenha encontrado o tipo procurado digite 1 para retornar e cadastrar um tipo, caso contrario digite o tipo de sua preferencia");
+
+        Integer Tipoinserido = inserido.nextInt();
+
+
+        switch (Tipoinserido) {
+            case 1:
+                abaAberta = false;
+                break;
+            default:
+                Optional<TipoDoPokemon> tipo = tipoDoPokemonRepository.findById(Tipoinserido);
+
+                pokemon.setTipo(tipo.get());
+
+
+                pokemonRepository.save(pokemon);
+
+                System.out.println("Salvo");
+                break;
+        }
 
     }
 
@@ -74,11 +109,14 @@ public class PokemonService {
     }
 
     public void visualizar(){
-        Iterable<Pokemon> pokemons = pokemonRepository.findAll();
-        pokemons.forEach(pokemon -> System.out.println());
+        System.out.println(pokemonRepository.findAll());
+
     }
 
     public void deletar(Scanner inserido){
+        System.out.println("Pokemons: ");
+        System.out.println(pokemonRepository.findAll());
+        System.out.println("---DELETAR---");
         System.out.println("Digite o ID");
         int id = inserido.nextInt();
         pokemonRepository.deleteById(id);
